@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gmmtools"
+version = "0.1.0"
+description = "Gaussian Mixture Model utilities with conditioning, marginalisation, and CMI"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Ankush Aggarwal", email = "ankush.aggarwal@glasgow.ac.uk"}
+]
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "npeet"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "black",
+    "ruff",
+    "build",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourname/gmmtools"
+Repository = "https://github.com/yourname/gmmtools"
+Issues = "https://github.com/yourname/gmmtools/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
