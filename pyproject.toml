@@ -7,18 +7,18 @@ name = "gmmtools"
 version = "0.1.0"
 description = "Gaussian Mixture Model utilities with conditioning, marginalisation, and CMI"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = "==3.9.16"
 license = {file = "LICENSE"}
 authors = [
     {name = "Ankush Aggarwal", email = "ankush.aggarwal@glasgow.ac.uk"}
 ]
 
 dependencies = [
-    "numpy",
-    "pandas",
-    "scipy",
-    "scikit-learn",
-    "npeet"
+    "numpy==1.26.2",
+    "pandas==2.1.4",
+    "scipy==1.11.4",
+    "scikit-learn==0.24.1",
+    "npeet @ git+https://github.com/gregversteeg/NPEET.git"
 ]
 
 [project.optional-dependencies]
