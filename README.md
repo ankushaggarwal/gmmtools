@@ -11,4 +11,4 @@ It includes utilities with support for:
 ## Installation
 
 ```bash
-pip install gmmtools
+pip install git+https://github.com/ankushaggarwal/gmmtools
