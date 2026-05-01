@@ -1,7 +1,6 @@
 name: Run tests
 
 on:
-  push:
   pull_request:
 
 jobs:
@@ -10,7 +9,8 @@ jobs:
 
     strategy:
       matrix:
-        python-version: ["3.9"]
+        python-version: ["3.9", "3.10", "3.11"]
+
 
     steps:
       - name: Check out repository
