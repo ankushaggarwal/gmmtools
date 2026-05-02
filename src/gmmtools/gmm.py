@@ -416,7 +416,7 @@ class GMM_Custom:
 
         # Convert to equivalent standard normal z
         z = norm.ppf(mix_cdf)
-        return z
+        return z.flatten()
             
     def get_sf(self, var_name, threhold, condition=True):
         if condition:
