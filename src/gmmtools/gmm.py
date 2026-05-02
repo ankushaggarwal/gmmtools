@@ -315,8 +315,7 @@ class GMM_Custom:
         Z_sorted = np.sort(Z.flatten())[::-1]
         cum_prob = np.cumsum(Z_sorted*dx*dy)
         if cum_prob[-1]<0.99 or cum_prob[-1]>1:
-            raise ValueError("Cumulative probability is outside the desired range of 0.99 and 1.\n
-                              The contour levels might be spurious")
+            raise ValueError("Cumulative probability is outside the desired range of 0.99 and 1.\nThe contour levels might be spurious")
 
         levels = []
         for p in percentiles:
