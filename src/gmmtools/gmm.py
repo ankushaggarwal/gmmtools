@@ -311,12 +311,11 @@ class GMM_Custom:
         """
         X, Y, Z = self.get_gmm_contour_data(log=False)
 
-        Z_flat = Z.ravel()
-        Z_flat = Z_flat / Z_flat.sum()
-
-        idx = np.argsort(Z_flat)[::-1]
-        Z_sorted = Z_flat[idx]
-        cum_prob = np.cumsum(Z_sorted)
+        dx, dy = np.log(X[0,1])-np.log(X[0,0]), np.log(Y[1,0])-np.log(Y[0,0])
+        Z_sorted = np.sort(Z.flatten())[::-1]
+        cum_prob = np.cumsum(Z_sorted*dx*dy)
+        if cum_prob[-1]<0.99 or cum_prob[-1]>1:
+            raise ValueError("Cumulative probability is outside the desired range of 0.99 and 1.\nThe contour levels might be spurious")
 
         levels = []
         for p in percentiles:
