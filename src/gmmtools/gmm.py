@@ -15,6 +15,7 @@ class GMM_Custom:
         self.data = data
         self.cols = data.columns
         self.gmm = gmm
+        self.verbose = True
         try:
             self.ndim = gmm.n_features_in_
         except:
@@ -144,10 +145,12 @@ class GMM_Custom:
         for ii in remove_i:
             x_i.remove(ii)
         self.reduce_cols = self.cols[x_i]
-        print('Remaining indices are', self.reduce_cols)
+        if self.verbose:
+            print('Remaining indices are', self.reduce_cols)
 
         if len(cond_i)>0:
-            print('setting the value of ', self.cols[cond_i], 'to', x_cond)
+            if self.verbose:
+                print('setting the value of ', self.cols[cond_i], 'to', x_cond)
             self.x_cond = self.transform(x_cond)
 
         self.x_i = x_i
@@ -186,7 +189,8 @@ class GMM_Custom:
         for ii in x_i:
             marg_i.remove(ii)
         marg_cols = list(self.cols[marg_i])
-        print("In reduce_to_cols",marg_cols)
+        if self.verbose:
+            print("In reduce_to_cols",marg_cols)
         self.reduce(marginalise=marg_cols)
 
     def _create_conditioned_gmm(self):
@@ -239,7 +243,8 @@ class GMM_Custom:
 
         # Required to make GMM usable for sampling/scoring
         self.new_gmm.precisions_cholesky_ = _compute_precision_cholesky(self.new_gmm.covariances_, 'full')
-        print("Created a reduced gmm with",self.new_gmm.means_.shape[-1],"dimensions")
+        if self.verbose:
+            print("Created a reduced gmm with",self.new_gmm.means_.shape[-1],"dimensions")
         
     def _marginalize_gmm(self):
         weights = self.gmm.weights_
@@ -253,7 +258,8 @@ class GMM_Custom:
         new_gmm.covariances_ = covs_new
         new_gmm.precisions_cholesky_ = _compute_precision_cholesky(covs_new, 'full')
         self.new_gmm = new_gmm
-        print("Created a reduced gmm with",self.new_gmm.means_.shape[-1],"dimensions")
+        if self.verbose:
+            print("Created a reduced gmm with",self.new_gmm.means_.shape[-1],"dimensions")
 
     def update_reduced_gmm(self, x_cond):
         if type(x_cond) is not list and type(x_cond) is not np.ndarray:
@@ -262,7 +268,8 @@ class GMM_Custom:
         assert(len(self.cond_i) == len(x_cond))
 
         if len(self.cond_i)>0:
-            print('setting the value of ', self.cols[self.cond_i], 'to', x_cond)
+            if self.verbose:
+                print('setting the value of ', self.cols[self.cond_i], 'to', x_cond)
             self.x_cond = self.transform(x_cond)
 
         #updating the means
@@ -358,7 +365,8 @@ class GMM_Custom:
     def prob(self, x, condition = [], x_cond = [], marginalise = [], log = False):
         x = np.atleast_2d(x)
         if condition is [] and marginalise is []:
-            print('setting the value of ', self.cols, 'to', x)
+            if self.verbose:
+                print('setting the value of ', self.cols, 'to', x)
             x = self.transform(x)
             return np.exp(self.gmm.score_samples(x))
         
@@ -366,7 +374,8 @@ class GMM_Custom:
         assert(x.shape[1] + len(condition) + len(marginalise) == self.ndim)
         self.reduce(condition, x_cond, marginalise)
 
-        print('setting the value of ', self.cols[self.x_i], 'to', x)
+        if self.verbose:
+            print('setting the value of ', self.cols[self.x_i], 'to', x)
         x = self.transform(x)
         if log:
             return self.new_gmm.score_samples(x)
@@ -377,10 +386,12 @@ class GMM_Custom:
         x = self.transform(x)
 
         if x_cond is not None:
-            print('setting the value of ', self.cols[self.cond_i], 'to', x_cond)
+            if self.verbose:
+                print('setting the value of ', self.cols[self.cond_i], 'to', x_cond)
             self.update_reduced_gmm(x_cond)
         elif len(self.cond_i)>0:
-            print('Using the previous conditioned values for ', self.cols[self.cond_i], 'as', self.i_transform(self.x_cond))
+            if self.verbose:
+                print('Using the previous conditioned values for ', self.cols[self.cond_i], 'as', self.i_transform(self.x_cond))
             
         if log:
             return self.new_gmm.score_samples(x)
@@ -393,10 +404,12 @@ class GMM_Custom:
         x = self.transform(x)
 
         if x_cond is not None:
-            print('setting the value of ', self.cols[self.cond_i], 'to', x_cond)
+            if self.verbose:
+                print('setting the value of ', self.cols[self.cond_i], 'to', x_cond)
             self.update_reduced_gmm(x_cond)
         elif len(self.cond_i)>0:
-            print('Using the previous conditioned values for ', self.cols[self.cond_i], 'as', self.i_transform(self.x_cond))
+            if self.verbose:
+                print('Using the previous conditioned values for ', self.cols[self.cond_i], 'as', self.i_transform(self.x_cond))
         
         gmm = self.new_gmm
 
