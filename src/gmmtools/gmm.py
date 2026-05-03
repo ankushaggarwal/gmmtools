@@ -385,7 +385,7 @@ class GMM_Custom:
         x = np.atleast_2d(x)
         x = self.transform(x)
 
-        if x_cond is not None:
+        if x_cond is not None and len(x_cond)>0:
             if self.verbose:
                 print('setting the value of ', self.cols[self.cond_i], 'to', x_cond)
             self.update_reduced_gmm(x_cond)
