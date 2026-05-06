@@ -121,7 +121,7 @@ class GMM_Custom:
         try:
             cond_i = [self.cols.get_loc(c) for c in condition]
         except:
-            print("Error: some condition variable names are not present in the original data", self.cols, condition)
+            raise ValueError("Error: some condition variable names are not present in the original data", self.cols, condition)
 
         if len(condition)>0 and len(x_cond)==0:
             #x_cond = self.data[condition].mean().to_numpy() #wouldn't work if data has been removed
@@ -133,7 +133,7 @@ class GMM_Custom:
         try:
             marg_i = [self.cols.get_loc(c) for c in marginalise]
         except:
-            print("Error: some marginalise variable names are not present in the original data", self.cols, marginalise)
+            raise ValueError("Error: some marginalise variable names are not present in the original data", self.cols, marginalise)
 
         self.cond_cols = condition
         self.marg_cols = marginalise
@@ -322,7 +322,7 @@ class GMM_Custom:
         Z_sorted = np.sort(Z.flatten())[::-1]
         cum_prob = np.cumsum(Z_sorted*dx*dy)
         if cum_prob[-1]<0.99 or cum_prob[-1]>1:
-            raise ValueError("Cumulative probability is outside the desired range of 0.99 and 1.\nThe contour levels might be spurious")
+            print("Cumulative probability is outside the desired range of 0.99 and 1.\nThe contour levels might be spurious", cum_prob[-1])
 
         levels = []
         for p in percentiles:
