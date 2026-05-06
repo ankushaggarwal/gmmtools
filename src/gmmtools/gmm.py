@@ -452,6 +452,65 @@ class GMM_Custom:
         #print(prob)
         return prob
 
+    def _mixture_mean_cov(self, gmm):
+        """
+        Compute mean and covariance of a GaussianMixture object.
+        """
+        w = gmm.weights_
+        mu_k = gmm.means_
+        cov_k = gmm.covariances_
+
+        # Mixture mean
+        mu = np.sum(w[:, None] * mu_k, axis=0)
+
+        # Mixture covariance
+        cov = np.zeros((mu.shape[0], mu.shape[0]))
+        for k in range(len(w)):
+            diff = (mu_k[k] - mu).reshape(-1, 1)
+            cov += w[k] * (cov_k[k] + diff @ diff.T)
+
+        return mu, cov
+
+    def mean(self, reduced=False):
+        """
+        Mean of the full/reduced GMM.
+        """
+        if reduced:
+            if self.new_gmm is None:
+                    raise ValueError("Reduced GMM not available. Call reduce() first.")
+            mu, _ = self._mixture_mean_cov(self.new_gmm)
+        else:
+            mu, _ = self._mixture_mean_cov(self.gmm)
+        return self.i_transform(mu)
+
+
+    def mean_std(self, reduced=False):
+        """
+        Mean and Mean +- Standard deviation of the full/reduced GMM.
+        """
+        if reduced:
+            if self.new_gmm is None:
+                    raise ValueError("Reduced GMM not available. Call reduce() first.")
+            mu, cov = self._mixture_mean_cov(self.new_gmm)
+        else:
+            mu, cov = self._mixture_mean_cov(self.gmm)
+        std = np.sqrt(np.diag(cov))
+        return self.i_transform(mu), self.i_transform(mu+std), self.i_transform(mu-std)
+
+    def std(self, original_space=True):
+        """
+        Mean +- Standard deviation of the full/reduced GMM (per dimension).
+        """
+        if reduced:
+            if self.new_gmm is None:
+                    raise ValueError("Reduced GMM not available. Call reduce() first.")
+
+            mu, cov = self._mixture_mean_cov(self.new_gmm)
+        else:
+            mu, cov = self._mixture_mean_cov(self.gmm)
+        std = np.sqrt(np.diag(cov))
+        return self.i_transform(mu+std), self.i_transform(mu-std)
+
 def CMI_gmms(gmms,x_cols,z_cols):
     """
     Compute I(X; C | Z) using posterior entropies, where
