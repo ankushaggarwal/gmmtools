@@ -430,7 +430,7 @@ class GMM_Custom:
         z = norm.ppf(mix_cdf)
         return z.flatten()
             
-    def get_sf(self, var_name, threhold, condition=True):
+    def get_sf(self, var_name, threshold, condition=True):
         if condition:
             gmm = self.new_gmm
             dim = self.reduce_cols.get_loc(var_name)
